@@ -48,11 +48,21 @@ INSTALLED_APPS = [
     'producto',
     'rest_framework',
     'accounts',
-    'rest_framework.authtoken'
-
+    'rest_framework.authtoken',
+    
 
     
+
 ]
+
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_PORT = 587
+#EMAIL_USE_TLS = True
+#EMAIL_HOST_USER = 'gonzalezbrionesalvaro@gmail.com'
+#EMAIL_HOST_PASSWORD = 'iaphjswnuedkakup'
+#DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+#ALERT_RECIPIENTS = ['gonzalezbriones.alvaro@gmail.com']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
