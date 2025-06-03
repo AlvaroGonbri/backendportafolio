@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Group, User
 from rest_framework import serializers
 from .models import Profile
+from django.contrib.auth.password_validation import validate_password
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -53,3 +54,18 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                 setattr(profile, attr, value)
             profile.save()
         return instance
+    
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
+    
+class ChangePasswordSerializer(serializers.Serializer):
+    new_password = serializers.CharField(required=True)
+
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value

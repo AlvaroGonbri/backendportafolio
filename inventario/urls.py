@@ -23,4 +23,6 @@ urlpatterns = [
     # Endpoints de autenticación JWT
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/change-password/', views.ChangePasswordView.as_view(), name='change_password'),
+    path('api/change-other-password/<int:user_id>/', views.ChangeOtherPasswordView.as_view(), name='change-other-password')
 ]
