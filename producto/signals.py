@@ -5,33 +5,43 @@ from django.conf import settings
 from .models import Producto
 
 @receiver(post_save, sender=Producto)
-def alerta_stock_bajo(sender, instance, **kwargs):
-    print("SEÑAL EJECUTADA - producto:", instance.id_producto.nombre)
-    producto = instance.id_producto
-    
-    if producto.stock_minimo is None:
-        return
-    
-    if not producto.alerta_activa:  # Verifica si la alerta está activa
+def alerta_stock(sender, instance, **kwargs):
+    producto = instance
+
+    # No hacer nada si la alerta está desactivada o no hay límites definidos
+    if not producto.alerta_activa or producto.stock_minimo is None or producto.stock_maximo is None:
         return
 
-    stock_actual = instance.cantidad
-    umbral = producto.stock_minimo
+    stock_actual = producto.cant_existencia
+    umbral_min = producto.stock_minimo
+    umbral_max = producto.stock_maximo
 
-    if stock_actual < umbral:  # <-- Condición simplificada
-        ubicacion = instance.id_ubicacion.nombre if instance.id_ubicacion else 'Sin ubicación'
-        lote = instance.id_lote.numero_lote if instance.id_lote else 'N/A'
-        
-        subject = f"🚨 Alerta de stock bajo: {producto.nombre}"
+    # Alerta de stock bajo
+    if stock_actual < umbral_min:
+        subject = f"🚨 Alerta de stock bajo: {producto.nom_producto}"
         message = (
-            f"Producto: {producto.nombre} ({producto.codigo_producto})\n"
+            f"Producto: {producto.nom_producto} ({producto.cod_material})\n"
             f"Stock actual: {stock_actual}\n"
-            f"Umbral mínimo: {umbral}\n"
-            f"Ubicación: {ubicacion}\n"
-            f"Lote: {lote}\n\n"
+            f"Umbral mínimo: {umbral_min}\n\n"
             f"Acción requerida: Por favor reponer stock."
         )
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=settings.ALERT_RECIPIENTS,
+            fail_silently=False,
+        )
 
+    # Alerta de sobrestock
+    if stock_actual > umbral_max:
+        subject = f"⚠️ Alerta de sobrestock: {producto.nom_producto}"
+        message = (
+            f"Producto: {producto.nom_producto} ({producto.cod_material})\n"
+            f"Stock actual: {stock_actual}\n"
+            f"Umbral máximo: {umbral_max}\n\n"
+            f"Acción requerida: Por favor revisar el inventario, hay sobrestock."
+        )
         send_mail(
             subject=subject,
             message=message,

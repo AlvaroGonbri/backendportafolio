@@ -109,7 +109,7 @@ class Producto(models.Model):
         on_delete=models.PROTECT,
         db_column='tipo_id'
     )
-    #alerta_activa = models.BooleanField(default=True)
+    alerta_activa = models.BooleanField(default=True)
 
 
     def __str__(self):
