@@ -6,6 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Asignacion(models.Model):
@@ -119,7 +120,36 @@ class Producto(models.Model):
         db_table = 'Producto'
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
+        
 
+#class MovimientoInventario(models.Model):
+ #   TIPO_MOVIMIENTO = [
+  #      ('entrada', 'Entrada'),
+   #     ('salida', 'Salida'),
+    #    ('asignacion', 'Asignación a técnico')
+    #]
+    
+#    producto = models.ForeignKey('Producto', on_delete=models.PROTECT)
+#    tecnico = models.ForeignKey(
+#        User, 
+#        on_delete=models.PROTECT,
+#        related_name='movimientos_tecnico'
+#    )  # Usuario destinatario (técnico)
+#    tipo_movimiento = models.CharField(max_length=20, choices=TIPO_MOVIMIENTO)
+#    cantidad = models.IntegerField()
+#    fecha = models.DateTimeField(auto_now_add=True)
+#    observaciones = models.TextField(blank=True)
+#    usuario = models.ForeignKey(
+#        User, 
+#        on_delete=models.PROTECT,
+#        related_name='movimientos_registrados'
+#    )  # Usuario que registra la transacción
 
-
-
+ #   class Meta:
+ #       db_table = 'MovimientoInventario'
+ #       indexes = [
+ #          models.Index(fields=['fecha']),
+ #           models.Index(fields=['producto']),
+ #           models.Index(fields=['tecnico']),
+ #           models.Index(fields=['usuario']),
+ #       ]

@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from .models import Producto, Categoria, Tipoproducto
 from .serializers import ProductoSerializer, CategoriaSerializer, TipoproductoSerializer
 from rest_framework import status, viewsets, generics
-
+#from .serializers import MovimientoInventarioSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 # Create your views here.
@@ -84,4 +85,15 @@ class ProductoUpdateAPIView(generics.UpdateAPIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+#class MovimientoInventarioViewSet(viewsets.ModelViewSet):
+ #   queryset = MovimientoInventario.objects.select_related('producto', 'tecnico')
+  #  serializer_class = MovimientoInventarioSerializer
+   # filter_backends = [DjangoFilterBackend]
+    #filterset_fields = {
+     #   'producto': ['exact'],
+      #  'tecnico': ['exact'],
+       # 'fecha': ['gte', 'lte', 'exact'],
+        #'tipo_movimiento': ['exact']
+    #}
+    #ordering_fields = ['fecha']
 

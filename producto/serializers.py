@@ -52,4 +52,12 @@ class ProductoSerializer(serializers.ModelSerializer):
             'tipo_nombre'
         ]
 
+#class MovimientoInventarioSerializer(serializers.ModelSerializer):
+ #   producto_nombre = serializers.CharField(source='producto.nom_producto', read_only=True)
+  #  tecnico_email = serializers.CharField(source='tecnico.email', read_only=True)
+
+   # class Meta:
+    #    model = MovimientoInventario
+     #   fields = '__all__'
+
 

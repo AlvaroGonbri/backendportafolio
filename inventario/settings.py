@@ -49,7 +49,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'rest_framework.authtoken',
-    
+    'django_extensions',
+    'django_filters'
+
+
 
     
 
@@ -60,7 +63,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'gonzalezbriones.alvaro@gmail.com'
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_PASSWORD = 'iaphjswnuedkakup'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ALERT_RECIPIENTS = ['gonzalezbriones.alvaro@gmail.com']
 
@@ -90,6 +93,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8100",
     "http://127.0.0.1:8100",
+    "http://192.168.100.124:8100"
 
 ]
 
