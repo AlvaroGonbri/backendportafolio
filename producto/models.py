@@ -7,6 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Asignacion(models.Model):
@@ -153,3 +154,62 @@ class Producto(models.Model):
  #           models.Index(fields=['tecnico']),
  #           models.Index(fields=['usuario']),
  #       ]
+
+
+class AuditoriaProducto(models.Model):
+    ACCIONES = [
+        ('crear', 'Producto Creado'),
+        ('editar', 'Producto Editado'),
+        ('eliminar', 'Producto Eliminado'),
+        ('stock_entrada', 'Entrada de Stock'),
+        ('stock_salida', 'Salida de Stock'),
+        ('asignacion', 'Producto Asignado'),
+        ('devolucion', 'Producto Devuelto'),
+    ]
+    
+    # Información del producto
+    producto_id = models.IntegerField(help_text="ID del producto afectado")
+    codigo_material = models.CharField(max_length=50, null=True, blank=True)
+    nombre_producto = models.CharField(max_length=200, null=True, blank=True)
+    
+    # Información de la acción
+    accion = models.CharField(max_length=20, choices=ACCIONES)
+    descripcion = models.TextField(help_text="Descripción detallada de la acción")
+    
+    # Datos del cambio
+    cantidad_anterior = models.IntegerField(null=True, blank=True)
+    cantidad_nueva = models.IntegerField(null=True, blank=True)
+    datos_anteriores = models.JSONField(null=True, blank=True, help_text="Estado anterior del producto")
+    datos_nuevos = models.JSONField(null=True, blank=True, help_text="Estado nuevo del producto")
+    
+    # Información de auditoría
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, help_text="Usuario que realizó la acción")
+    fecha_accion = models.DateTimeField(default=timezone.now)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(null=True, blank=True)
+    
+    # Información adicional
+    observaciones = models.TextField(null=True, blank=True)
+    categoria = models.CharField(max_length=100, null=True, blank=True)
+    tipo_producto = models.CharField(max_length=100, null=True, blank=True)
+    
+    class Meta:
+        db_table = 'auditoria_producto'
+        ordering = ['-fecha_accion']
+        indexes = [
+            models.Index(fields=['producto_id']),
+            models.Index(fields=['accion']),
+            models.Index(fields=['fecha_accion']),
+            models.Index(fields=['usuario']),
+            models.Index(fields=['codigo_material']),
+        ]
+        
+    def __str__(self):
+        return f"{self.get_accion_display()} - {self.nombre_producto} por {self.usuario.username}"
+    
+    @property
+    def diferencia_stock(self):
+        """Calcula la diferencia de stock si aplica"""
+        if self.cantidad_anterior is not None and self.cantidad_nueva is not None:
+            return self.cantidad_nueva - self.cantidad_anterior
+        return None
