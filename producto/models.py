@@ -6,14 +6,14 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-
+from django.contrib.auth.models import User  # Importación faltante
 
 class Asignacion(models.Model):
     asignacionid = models.AutoField(db_column='AsignacionID', primary_key=True)  # Field name made lowercase.
     tecnicoid = models.IntegerField(db_column='TecnicoID')  # Field name made lowercase.
     productoid = models.IntegerField(db_column='ProductoID')  # Field name made lowercase.
     cantidadasignada = models.DecimalField(db_column='CantidadAsignada', max_digits=10, decimal_places=2)  # Field name made lowercase.
-    fechaasignacion = models.DateTimeField(db_column='FechaAsignacion')  # Field name made lowercase.
+    fechaasignacion = models.DateTimeField(auto_now_add=True)  # Field name made lowercase.
     fechadevolucionesperada = models.DateField(db_column='FechaDevolucionEsperada', blank=True, null=True)  # Field name made lowercase.
     estado = models.CharField(db_column='Estado', max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS')  # Field name made lowercase.
 
@@ -120,6 +120,22 @@ class Producto(models.Model):
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
 
+class Movimiento(models.Model):
+    TIPO_CHOICES = [
+        ('entrada', 'Entrada'),   # Compra, ajuste positivo, devolución
+        ('salida', 'Salida'),     # Asignación, venta, ajuste negativo
+        # Puedes agregar 'ajuste', 'transferencia', etc. si lo necesitas
+    ]
+
+    producto = models.ForeignKey(Producto, on_delete=models.PROTECT)  # Usa el modelo directamente
+    fecha = models.DateTimeField(auto_now_add=True)
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
+    cantidad = models.PositiveIntegerField()
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    observacion = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return f"{self.get_tipo_display()} - {self.producto.nom_producto} - {self.cantidad} ({self.fecha})"
 
 
 

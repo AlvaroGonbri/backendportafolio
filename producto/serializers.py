@@ -1,5 +1,13 @@
 from rest_framework import serializers
-from producto.models import Categoria, Producto, Tipoproducto
+from producto.models import Categoria, Movimiento, Producto, Tipoproducto, Asignacion
+from django.contrib.auth.models import User
+
+
+class AsignacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Asignacion
+        fields = ['tecnicoid', 'productoid', 'cantidadasignada', 'fechadevolucionesperada']
+        read_only_fields = ['fechaasignacion']
 
 class TipoproductoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,5 +59,15 @@ class ProductoSerializer(serializers.ModelSerializer):
             'tipo_id',
             'tipo_nombre'
         ]
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email']
+
+
+class MovimientoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movimiento
 
 
